@@ -1,0 +1,207 @@
+﻿ 
+@page "/produk/{ProductId}"
+@rendermode InteractiveServer
+@inject CartService CartService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Detail Produk | New Design Print</PageTitle>
+
+@if (isLoading)
+{
+    <div class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-[9998]">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-600"></div>
+    </div>
+}
+else if (currentProduct == null)
+{
+    <div class="container mx-auto px-4 sm:px-6 py-12 text-center">
+        <i class="fas fa-exclamation-triangle fa-3x text-red-500 mb-4"></i>
+        <h1 class="text-2xl font-semibold text-gray-700">Produk Tidak Ditemukan</h1>
+        <p class="text-gray-500 mt-2">Maaf, produk yang Anda cari tidak tersedia.</p>
+        <button @onclick='() => NavigationManager.NavigateTo("/products")' class="mt-6 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-md">
+            Kembali ke Katalog
+        </button>
+    </div>
+}
+else
+{
+    <div class="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            <div class="product-gallery">
+                <div class="main-image mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <img src="@currentProduct.ImageUrl" alt="@currentProduct.Name" class="w-full h-auto max-h-[500px] object-contain bg-gray-100 p-4"/>
+                </div>
+                <div class="thumbnails flex space-x-3">
+                    @for(int i = 0; i < 3; i++) {
+                        <img src="@currentProduct.ImageUrl.Replace("?text=", $"?text={currentProduct.Name}+{i+1}&")" alt="Thumbnail @(i+1)" class="w-20 h-20 object-cover rounded-md border-2 border-transparent hover:border-pink-500 cursor-pointer"/>
+                    }
+                </div>
+            </div>
+
+            <div class="product-info">
+                @if (!string.IsNullOrWhiteSpace(currentProduct.Category))
+                {
+                    <span class="text-sm text-pink-600 font-semibold uppercase tracking-wider">@currentProduct.Category</span>
+                }
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mt-1 mb-4">@currentProduct.Name</h1>
+                
+                <p class="text-3xl font-bold text-pink-600 mb-6">
+                    @if (currentProduct.Price > 0)
+                    {
+                        <span>@currentProduct.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID"))</span>
+                    }
+                    else
+                    {
+                        <span class="text-2xl">Harga Spesial? Hubungi Kami!</span>
+                    }
+                </p>
+
+                <div class="prose prose-lg text-gray-700 mb-6">
+                    <p>@currentProduct.FullDescription</p>
+                    <ul>
+                        <li>Bahan berkualitas tinggi.</li>
+                        <li>Pilihan kustomisasi beragam.</li>
+                        <li>Proses cepat dan hasil memuaskan.</li>
+                    </ul>
+                </div>
+
+                <div class="customization-options mb-6 space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Ukuran (jika berlaku):</label>
+                        <select class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm">
+                            <option>S</option>
+                            <option>M</option>
+                            <option>L</option>
+                            <option>XL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Jumlah:</label>
+                        <input type="number" @bind="quantityToAdd"  min="1" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div class="action-buttons flex flex-col sm:flex-row gap-3">
+                    <a href="@($"https://wa.me/{currentProduct.WhatsAppNumber}?text={System.Web.HttpUtility.UrlEncode($"Halo, saya tertarik dengan produk {currentProduct.Name} ({currentProduct.Id}) dan ingin bertanya lebih lanjut.")}")"
+                       target="_blank"
+                       class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 flex items-center justify-center text-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Pesan via WhatsApp
+                    </a>
+                     <button @onclick="AddToCart"
+                           class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-md transition-colors duration-300 flex items-center justify-center text-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Tambah ke Keranjang
+                    </button>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(addToCartMessage))
+                {
+                    <p class="mt-4 text-sm @(isAddToCartSuccess ? "text-green-600" : "text-red-600")">@addToCartMessage</p>
+                }
+            </div>
+        </div>
+
+        <div class="mt-16 pt-10 border-t border-gray-200">
+            <h2 class="text-2xl font-semibold text-gray-800 text-center mb-8">Produk Terkait</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @for(int i = 0; i < 4; i++) {
+                     <div class="product-card bg-white rounded-lg shadow overflow-hidden group">
+                        <div class="relative h-48 bg-gray-200">
+                            <img src="https://placehold.co/400x300/E9D5FF/5B21B6?text=Terkait+@(i+1)" alt="Produk Terkait @(i+1)" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="text-lg font-semibold text-gray-700 group-hover:text-pink-600">Produk Terkait @(i+1)</h4>
+                            <p class="text-pink-500 font-bold">Rp XX.XXX</p>
+                        </div>
+                    </div>   
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string ProductId { get; set; } = string.Empty;
+
+    private ProductDetailItem? currentProduct;
+    private bool isLoading = true;
+    private const string DefaultWhatsAppNumber = "6285156615269";
+
+    private int quantityToAdd = 1; // Untuk input jumlah
+    private string? addToCartMessage;
+    private bool isAddToCartSuccess;
+    public class ProductDetailItem // Mirip ProductItem, tapi mungkin ada field tambahan seperti FullDescription
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string ShortDescription { get; set; } = string.Empty;
+        public string FullDescription { get; set; } = string.Empty; // Deskripsi lebih panjang
+        public decimal Price { get; set; }
+        public string ImageUrl { get; set; } = "https://placehold.co/600x400/E2E8F0/A0AEC0?text=Produk+Detail";
+        public string Category { get; set; } = string.Empty;
+        public string Tag { get; set; } = string.Empty;
+        public string WhatsAppNumber { get; set; } = DefaultWhatsAppNumber;
+        // Bisa tambahkan List<string> AdditionalImageUrls, List<Specification> Specifications, dll.
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        // Simulasi pengambilan data produk berdasarkan ProductId
+        await Task.Delay(500); 
+        currentProduct = GetProductDetails(ProductId);
+        isLoading = false;
+    }
+
+    private ProductDetailItem? GetProductDetails(string productId)
+    {
+        // Ini adalah data dummy. Di aplikasi nyata, Anda akan mengambil ini dari database atau API.
+        var allProductsData = new List<ProductDetailItem>
+        {
+            new ProductDetailItem {
+                Id = "b7d6d2ae7bea4d4d9210923b47e6c61c", // Harus cocok dengan cara Anda generate ID atau slug
+                Name = "Kaos Custom Sablon DTF Premium",
+                ShortDescription = "Kaos katun berkualitas dengan sablon DTF full color.",
+                FullDescription = "Wujudkan kaos impian Anda dengan sablon DTF (Direct To Film) berkualitas tinggi. Cocok untuk kaos satuan, komunitas, event, atau merchandise. Bahan kaos katun combed 20s/30s yang nyaman dan adem. Pilihan warna kaos beragam. Area cetak maksimal A3. Kirim desain Anda atau konsultasikan dengan tim kami.",
+                Price = 85000,
+                Category = "Apparel",
+                Tag = "Best Seller",
+                ImageUrl = "https://placehold.co/600x400/FBCFE8/831843?text=Kaos+DTF+Detail",
+                WhatsAppNumber = DefaultWhatsAppNumber
+            },
+            new ProductDetailItem {
+                Id = "mug-keramik-custom-foto",
+                Name = "Mug Keramik Custom Foto & Logo",
+                ShortDescription = "Cetak foto, logo, atau tulisan di mug keramik.",
+                FullDescription = "Abadikan momen spesial atau promosikan brand Anda dengan mug custom berkualitas. Terbuat dari keramik standar SNI, aman untuk microwave dan dishwasher. Cetak full color dengan hasil yang tajam dan awet. Cocok untuk hadiah, souvenir pernikahan, merchandise perusahaan, atau koleksi pribadi.",
+                Price = 45000,
+                Category = "Souvenir",
+                ImageUrl = "https://placehold.co/600x400/A5B4FC/312E81?text=Mug+Custom+Detail"
+            },
+             // Tambahkan produk lainnya di sini, pastikan ID-nya unik dan sesuai dengan
+             // yang mungkin dihasilkan oleh product list page untuk navigasi
+        };
+
+        // Mencocokkan ID, bisa jadi case-insensitive jika perlu
+        return allProductsData.FirstOrDefault(p => p.Id.Equals(productId, StringComparison.OrdinalIgnoreCase) || p.Name.ToLowerInvariant().Replace(" ", "-").Contains(productId.ToLowerInvariant()));
+    }
+    
+    private void AddToCart()
+    {
+        if (currentProduct == null) return;
+
+        var cartItem = new CartItem( // Menggunakan CartItem dari Models
+            productId: currentProduct.Id,
+            productName: currentProduct.Name,
+            price: currentProduct.Price,
+            quantity: quantityToAdd,
+            imageUrl: currentProduct.ImageUrl // Ambil ImageUrl yang relevan
+        );
+
+        CartService.AddItem(cartItem);
+
+        isAddToCartSuccess = true;
+        addToCartMessage = $"{currentProduct.Name} (x{quantityToAdd}) berhasil ditambahkan ke keranjang!";
+
+        NavigationManager.NavigateTo("cart"); // Arahkan ke halaman keranjang
+    }
+}

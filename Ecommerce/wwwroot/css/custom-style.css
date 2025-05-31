@@ -1,0 +1,66 @@
+﻿/* wwwroot/css/custom-styles.css */
+/* Tambahkan gaya kustom di sini jika tidak bisa dicapai dengan Tailwind */
+
+/* Contoh untuk animasi WOW.js jika Anda menggunakannya */
+/* Anda bisa menggunakan kelas bawaan Animate.css atau membuat sendiri */
+.wow-animate-slideInUp {
+    animation-name: slideInUp; /* Pastikan animasi ini didefinisikan atau dari Animate.css */
+}
+
+.wow-animate-fadeIn {
+    animation-name: fadeIn;
+}
+
+.wow-animate-slideInLeft {
+    /* Anda mungkin perlu menambahkan definisi animasi ini jika tidak menggunakan Animate.css */
+    /* Contoh sederhana: */
+    animation-name: customSlideInLeft;
+    animation-duration: 0.8s; /* Sesuaikan durasi */
+    visibility: hidden; /* Atur agar elemen tidak terlihat sebelum animasi */
+    animation-fill-mode: forwards; /* Agar style terakhir dipertahankan */
+}
+
+.wow-animate-slideInRight {
+    animation-name: customSlideInRight;
+    animation-duration: 0.8s;
+    visibility: hidden;
+    animation-fill-mode: forwards;
+}
+
+@keyframes customSlideInLeft {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+        visibility: visible;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@keyframes customSlideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+        visibility: visible;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #4a5568; /* gray-700 */
+}
+
+/* Styling untuk input form agar lebih mirip dengan contoh jika diperlukan */
+.form-input {
+    /* Tailwind sudah cukup baik, tapi bisa ditambahkan jika ada spesifik */
+}

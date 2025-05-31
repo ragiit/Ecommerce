@@ -1,0 +1,161 @@
+﻿ 
+@page "/cart"
+@rendermode InteractiveServer
+
+
+<PageTitle>Keranjang Belanja | New Design Print</PageTitle>
+
+<div class="container mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-8 sm:mb-10">
+            <i class="fas fa-shopping-cart mr-3 text-pink-600"></i>Keranjang Belanja Anda
+        </h1>
+
+        @if (!CartService.Items.Any())
+        {
+            <div class="text-center py-10 bg-white rounded-lg shadow-md">
+                <i class="fas fa-cart-arrow-down fa-4x text-gray-300 mb-6"></i>
+                <p class="text-xl text-gray-600 mb-3">Keranjang belanja Anda masih kosong.</p>
+                <p class="text-gray-500 mb-6">Ayo temukan produk custom favoritmu!</p>
+                <button @onclick='() => NavigationManager.NavigateTo("/products")'
+                        class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-8 rounded-md transition-colors">
+                    Lihat Produk
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+                <div class="divide-y divide-gray-200">
+                    @foreach (var item in CartService.Items)
+                    {
+                        <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 hover:bg-gray-50 transition-colors">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-md shadow-sm flex-shrink-0" />
+                            <div class="flex-grow text-center sm:text-left">
+                                <h2 class="text-lg sm:text-xl font-semibold text-gray-800 hover:text-pink-600 transition-colors">
+                                    <a href="@($"/produk/{item.ProductId}")">@item.ProductName</a>
+                                </h2>
+                                <p class="text-pink-600 font-semibold text-md">@item.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID"))</p>
+                            </div>
+                            <div class="flex items-center gap-3 sm:gap-4 mt-3 sm:mt-0">
+                                <div class="quantity-selector flex items-center border border-gray-300 rounded-md">
+                                    <button @onclick="() => UpdateItemQuantity(item.ProductId, item.Quantity - 1)"
+                                            class="px-3 py-1.5 text-gray-600 hover:bg-gray-200 rounded-l-md transition-colors @(item.Quantity <= 1 ? "opacity-50 cursor-not-allowed" : "")"
+                                            disabled="@(item.Quantity <= 1)">
+                                        <i class="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <input type="number" min="1" value="@item.Quantity"
+                                           @onchange="(e) => HandleQuantityChange(item.ProductId, e.Value?.ToString())"
+                                           class="w-12 text-center border-l border-r border-gray-300 py-1.5 focus:ring-pink-500 focus:border-pink-500 text-sm" />
+                                    <button @onclick="() => UpdateItemQuantity(item.ProductId, item.Quantity + 1)"
+                                            class="px-3 py-1.5 text-gray-600 hover:bg-gray-200 rounded-r-md transition-colors">
+                                        <i class="fas fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                                <p class="text-md sm:text-lg font-semibold text-gray-700 w-28 text-right">
+                                    @item.SubTotal.ToString("c0", new System.Globalization.CultureInfo("id-ID"))
+                                </p>
+                                <button @onclick="() => CartService.RemoveItem(item.ProductId)"
+                                        class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-full hover:bg-red-100" title="Hapus item">
+                                    <i class="fas fa-trash-alt text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="bg-gray-50 p-6 sm:p-8 border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="text-center sm:text-left">
+                            <p class="text-lg text-gray-700">Total Item: <span class="font-bold text-pink-600">@CartService.GetTotalItems()</span></p>
+                        </div>
+                        <div class="text-center sm:text-right">
+                            <p class="text-xl text-gray-600">Total Belanja:</p>
+                            <p class="text-3xl font-bold text-pink-600">@CartService.GetTotal().ToString("c0", new System.Globalization.CultureInfo("id-ID"))</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 sm:mt-8">
+                        <button @onclick="CheckoutToWhatsApp"
+                                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-6 rounded-lg shadow-md transition-transform hover:scale-105 flex items-center justify-center text-lg">
+                            <i class="fab fa-whatsapp mr-3"></i> Checkout via WhatsApp
+                        </button>
+                        <button @onclick="ClearCartAndNotify" class="w-full mt-3 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm transition-colors">
+                            Kosongkan Keranjang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string yourWhatsAppNumber = "6285156615269"; // GANTI DENGAN NOMOR WA ANDA (tanpa + atau 0 di depan)
+
+    protected override void OnInitialized()
+    {
+        CartService.OnCartChanged += StateHasChanged; // Langganan event
+    }
+
+    public void Dispose()
+    {
+        CartService.OnCartChanged -= StateHasChanged; // Berhenti langganan untuk mencegah memory leak
+    }
+
+    private void UpdateItemQuantity(string productId, int newQuantity)
+    {
+        if (newQuantity < 1) newQuantity = 1; // Minimal 1
+        CartService.UpdateQuantity(productId, newQuantity);
+    }
+
+    private void HandleQuantityChange(string productId, string? newValue)
+    {
+        if (int.TryParse(newValue, out int quantity))
+        {
+            UpdateItemQuantity(productId, quantity);
+        }
+    }
+
+    private void ClearCartAndNotify()
+    {
+        CartService.ClearCart();
+        // Opsional: Tambahkan notifikasi bahwa keranjang telah dikosongkan
+    }
+
+    private void CheckoutToWhatsApp()
+    {
+        if (!CartService.Items.Any()) return;
+
+        var messageBuilder = new System.Text.StringBuilder();
+        messageBuilder.AppendLine("Halo New Design Print,");
+        messageBuilder.AppendLine();
+        messageBuilder.AppendLine("Saya ingin memesan item berikut dari keranjang belanja saya:");
+        messageBuilder.AppendLine("------------------------------------");
+
+        int itemNumber = 1;
+        foreach (var item in CartService.Items)
+        {
+            messageBuilder.AppendLine($"{itemNumber}. *{item.ProductName}*");
+            messageBuilder.AppendLine($"   - Jumlah: {item.Quantity}");
+            messageBuilder.AppendLine($"   - Harga Satuan: {item.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID"))}");
+            messageBuilder.AppendLine($"   - Subtotal: {item.SubTotal.ToString("c0", new System.Globalization.CultureInfo("id-ID"))}");
+            messageBuilder.AppendLine();
+            itemNumber++;
+        }
+        messageBuilder.AppendLine("------------------------------------");
+        messageBuilder.AppendLine($"*Total Keseluruhan: {CartService.GetTotal().ToString("c0", new System.Globalization.CultureInfo("id-ID"))}*");
+        messageBuilder.AppendLine();
+        messageBuilder.AppendLine("Mohon informasinya untuk langkah selanjutnya. Terima kasih.");
+        // Anda bisa menambahkan kolom untuk nama & no telp pelanggan jika ada form sebelum checkout.
+
+        var encodedMessage = HttpUtility.UrlEncode(messageBuilder.ToString());
+        var whatsappURL = $"https://wa.me/{yourWhatsAppNumber}?text={encodedMessage}";
+
+        // Opsional: Kosongkan keranjang setelah checkout
+        // CartService.ClearCart();
+        // Pertimbangkan apakah akan mengosongkan sebelum atau setelah pengguna berhasil mengirim WA.
+        // Untuk saat ini, kita biarkan tidak dikosongkan otomatis.
+
+        NavigationManager.NavigateTo(whatsappURL, forceLoad: true); // forceLoad untuk navigasi eksternal
+    }
+}

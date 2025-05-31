@@ -1,0 +1,45 @@
+﻿ 
+
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+
+<div class="flex flex-col min-h-screen font-poppins text-gray-700">
+    <PageLoader @ref="pageLoaderInstance" LoadingTimeMilliseconds="700" />
+
+    <AppHeader />
+
+    <main class="flex-grow">
+        @Body
+    </main>
+
+    <AppFooter />
+
+    <ScrollToTopButton />
+</div>
+
+<div id="blazor-error-ui">
+    Terjadi kesalahan yang tidak ditangani.
+    <a href="" class="reload">Muat Ulang</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    private PageLoader? pageLoaderInstance;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Inisialisasi JS global jika ada, seperti untuk ScrollToTopButton
+            // await JSRuntime.InvokeVoidAsync("siteJsInterop.initGlobalScripts");
+
+            // Sembunyikan loader setelah render pertama selesai
+            // Ini adalah cara alternatif jika PageLoader tidak mengelola dirinya sendiri sepenuhnya
+            // atau jika Anda ingin sinkronisasi yang lebih ketat dengan MainLayout.
+            if (pageLoaderInstance != null)
+            {
+                // await pageLoaderInstance.HideLoaderAfterDelay(0); // Atau biarkan PageLoader mengelola dirinya sendiri
+            }
+        }
+    }
+}

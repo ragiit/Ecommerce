@@ -1,0 +1,407 @@
+﻿
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject CartService CartService  
+@implements IDisposable 
+
+<div class="header-area shadow-md sticky top-0 bg-white z-[1000]">
+    <div class="container mx-auto px-4 sm:px-6">
+        <div class="row upper-nav flex items-center py-2">
+            <div class="col-3 nav-icon w-1/4">
+                <ul class="social-icons-simple flex space-x-3">
+                    <li><a href="https://wa.me/+6285156615269" target="_blank" class="text-gray-600 hover:text-green-500 transition-colors"><i class="fab fa-whatsapp text-xl"></i></a></li>
+                    <li><a href="#" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors"><i class="fab fa-instagram text-xl"></i></a></li>
+                    <li><a href="#" target="_blank" class="text-gray-600 hover:text-blue-600 transition-colors"><i class="fab fa-facebook-f text-xl"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-6 text-center nav-logo w-1/2">
+                <NavLink href="/">
+                    <img src="https://placehold.co/150x50/FFFFFF/E6007E?text=NDP+Logo" alt="New Design Print Logo" style="max-height: 50px" class="mx-auto" />
+                </NavLink>
+            </div>
+            <div class="col-3 nav-utility text-right w-1/4 flex justify-end items-center space-x-4">
+                <a href="javascript:void(0);" title="Cari Produk" @onclick="ToggleSearchOverlay" class="text-gray-600 hover:text-pink-600 transition-colors">
+                    <i class="fas fa-search text-lg"></i>
+                </a>
+                <div class="relative">
+                    <a href="javascript:void(0);" @onclick="ToggleMiniCart" title="Lihat Pesanan Anda" class="text-gray-600 hover:text-pink-600 transition-colors">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        @if (CartService.GetTotalItems() > 0)
+                        {
+                            <span class="absolute -top-2 -right-2 bg-pink-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5">@CartService.GetTotalItems()</span>
+                        }
+                    </a>
+                    @if (isMiniCartOpen)
+                    {
+                        <div class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-xl z-20 border border-gray-200">
+                            <div class="p-4 border-b"><h4 class="text-md font-semibold text-gray-800">Ringkasan Pesanan</h4></div>
+                            <div class="p-4 max-h-60 overflow-y-auto">
+                                @if (CartService.Items.Any())
+                                {
+                                    @foreach (var item in CartService.Items)
+                                    { // Menggunakan CartService.Items
+                                        <div class="flex items-center mb-3">
+                                            <img src="@item.ImageUrl" alt="@item.ProductName" class="w-12 h-12 object-cover rounded mr-3">
+                                            <div class="flex-grow">
+                                                <h5 class="text-sm font-semibold text-gray-700">@item.ProductName</h5>
+                                                <p class="text-xs text-gray-500">@item.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID")) x @item.Quantity</p>
+                                                <p class="text-sm text-pink-600 font-semibold">@item.SubTotal.ToString("c0", new System.Globalization.CultureInfo("id-ID"))</p>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-sm text-gray-500 text-center">Keranjang Anda kosong.</p>
+                                }
+                            </div>
+                            @if (CartService.Items.Any())
+                            {
+                                <div class="p-4 border-t">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-md font-semibold text-gray-800">Total:</span>
+                                        <span class="text-md font-bold text-pink-600">@CartService.GetTotal().ToString("c0", new System.Globalization.CultureInfo("id-ID"))</span>
+                                    </div>
+                                    <NavLink href="/cart" @onclick="() => isMiniCartOpen = false"
+                                             class="block w-full text-center bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded-md transition-colors">
+                                        Lihat Keranjang & Checkout
+                                    </NavLink>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-md static-nav hidden md:flex justify-center py-2 border-t border-gray-200">
+            <ul class="navbar-nav flex space-x-6">
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider text-gray-700 hover:text-pink-600"
+                    href="/"
+                    Match="NavLinkMatch.All"
+                    ActiveClass="text-pink-600 border-b-2 border-pink-600">
+                        Beranda
+                    </NavLink>
+                </li>
+
+                <li class="nav-item dropdown static group">
+                    <a class="nav-link dropdown-toggle text-gray-700 hover:text-pink-600 font-semibold uppercase text-sm tracking-wider"
+                    href="javascript:void(0)">
+                        Produk Kami <i class="fas fa-chevron-down text-xs ml-1"></i>
+                    </a>
+                    <div class="dropdown-menu megamenu hidden group-hover:block absolute left-0 right-0 mt-0 w-full bg-white shadow-lg border-t border-pink-600 p-6">
+                        <div class="container mx-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <div>
+                                    <h5 class="dropdown-title text-md font-bold text-gray-800 mb-3">Apparel Custom</h5>
+                                    <ul class="space-y-2">
+                                        <li>
+                                            <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
+                                            href="/produk/kaos"
+                                            ActiveClass="text-pink-600 font-semibold">
+                                                <i class="fas fa-angle-right text-xs mr-1"></i>Kaos & T-Shirt
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
+                                            href="/produk/polo"
+                                            ActiveClass="text-pink-600 font-semibold">
+                                                <i class="fas fa-angle-right text-xs mr-1"></i>Polo Shirt
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
+                                            href="/produk/jaket"
+                                            ActiveClass="text-pink-600 font-semibold">
+                                                <i class="fas fa-angle-right text-xs mr-1"></i>Jaket & Hoodie
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="dropdown-title text-md font-bold text-gray-800 mb-3">Souvenir & Merchandise</h5>
+                                    <ul class="space-y-2">
+                                        <li>
+                                            <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
+                                            href="/produk/payung"
+                                            ActiveClass="text-pink-600 font-semibold">
+                                                <i class="fas fa-angle-right text-xs mr-1"></i>Payung Custom
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
+                                            href="/produk/mug"
+                                            ActiveClass="text-pink-600 font-semibold">
+                                                <i class="fas fa-angle-right text-xs mr-1"></i>Mug & Tumbler
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-span-2">
+                                    <h5 class="dropdown-title text-md font-bold text-gray-800 mb-3">Produk Unggulan</h5>
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <NavLink href="/produk/payung">
+                                            <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Payung"
+                                            alt="Custom Payung"
+                                            class="rounded hover:opacity-80 transition-opacity" />
+                                        </NavLink>
+                                        <NavLink href="/produk/kaos">
+                                            <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Kaos"
+                                            alt="Custom Kaos"
+                                            class="rounded hover:opacity-80 transition-opacity" />
+                                        </NavLink>
+                                        <NavLink href="/produk/mug">
+                                            <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Mug"
+                                            alt="Custom Mug"
+                                            class="rounded hover:opacity-80 transition-opacity" />
+                                        </NavLink>
+                                    </div>
+                                    <p class="mt-4 text-sm text-gray-600">
+                                        Temukan berbagai produk custom berkualitas untuk promosi dan personal Anda.
+                                    </p>
+                                    <NavLink href="/produk"
+                                    class="inline-block mt-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold py-2 px-4 rounded-md transition-colors">
+                                        Lihat Katalog
+                                    </NavLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider text-gray-700 hover:text-pink-600"
+                    href="/contact"
+                    ActiveClass="text-pink-600 border-b-2 border-pink-600">
+                        Kontak Kami
+                    </NavLink>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider text-gray-700 hover:text-pink-600"
+                    href="/how-to-order"
+                    ActiveClass="text-pink-600 border-b-2 border-pink-600">
+                        Cara Pesan
+                    </NavLink>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider text-gray-700 hover:text-pink-600"
+                    href="/about-us"
+                    ActiveClass="text-pink-600 border-b-2 border-pink-600">
+                        Tentang Kami
+                    </NavLink>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider flex items-center" href="/cart" ActiveClass="text-pink-600 border-b-2 border-pink-600" InactiveClass="text-gray-700 hover:text-pink-600">
+                        Keranjang
+                        @if (CartService.GetTotalItems() > 0)
+                        {
+                            <span class="ml-1.5 bg-pink-500 text-white text-xs rounded-full px-1.5 py-0.5">@CartService.GetTotalItems()</span>
+                        }
+                    </NavLink>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="md:hidden flex justify-end items-center py-2 border-t border-gray-200">
+            <button @onclick="ToggleMobileMenu" class="text-gray-600 hover:text-pink-600">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </div>
+    @if (isMobileMenuOpen)
+    {
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-[1001]" @onclick="ToggleMobileMenu"></div>
+        <div class="fixed top-0 right-0 h-full w-72 bg-gradient-to-b from-pink-600 to-purple-700 shadow-xl p-6 z-[1002] transform transition-transform duration-300 @(isMobileMenuOpen ? "translate-x-0" : "translate-x-full")">
+            <div class="flex justify-between items-center mb-6">
+                <img src="https://placehold.co/120x40/FFFFFF/FFFFFF?text=LogoMobile" alt="Logo Mobile" class="max-h-8" />
+                <button @onclick="ToggleMobileMenu" class="text-white hover:text-pink-200"><i class="fas fa-times text-2xl"></i></button>
+            </div>
+            <nav>
+                <ul class="space-y-3">
+                    <li><NavLink @onclick='() => NavigateAndCloseMenu("/")' href="/" Match="NavLinkMatch.All" class="block py-2 px-3 text-white hover:bg-white hover:text-pink-600 rounded-md font-medium" ActiveClass="text-pink-200 bg-white bg-opacity-20">BERANDA</NavLink></li>
+                    <li>
+                        <button @onclick="() => ToggleMobileSubMenu(ref isProdukSubMenuOpen)" class="w-full flex justify-between items-center py-2 px-3 text-white hover:bg-white hover:text-pink-600 rounded-md font-medium">
+                            PRODUK KAMI <i class="fas @(isProdukSubMenuOpen ? "fa-chevron-up" : "fa-chevron-down") text-xs"></i>
+                        </button>
+                        @if (isProdukSubMenuOpen)
+                        {
+                            <ul class="pl-4 mt-1 space-y-1">
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/kaos")' href="/produk/kaos" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Kaos & T-Shirt</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/polo")' href="/produk/polo" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Polo Shirt</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/payung")' href="/produk/payung" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Payung Custom</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk")' href="/produk" class="block py-1 px-2 text-pink-200 hover:text-white text-sm font-semibold">Lihat Semua...</NavLink></li>
+                            </ul>
+                        }
+                    </li>
+                    <li><NavLink @onclick='() => NavigateAndCloseMenu("/how-to-order")' href="/how-to-order" class="block py-2 px-3 text-white hover:bg-white hover:text-pink-600 rounded-md font-medium" ActiveClass="text-pink-200 bg-white bg-opacity-20">CARA PESAN</NavLink></li>
+                    <li><NavLink @onclick='() => NavigateAndCloseMenu("/portofolio")' href="/portofolio" class="block py-2 px-3 text-white hover:bg-white hover:text-pink-600 rounded-md font-medium" ActiveClass="text-pink-200 bg-white bg-opacity-20">PORTOFOLIO</NavLink></li>
+                    <li><NavLink @onclick='() => NavigateAndCloseMenu("/kontak")' href="/kontak" class="block py-2 px-3 text-white hover:bg-white hover:text-pink-600 rounded-md font-medium" ActiveClass="text-pink-200 bg-white bg-opacity-20">KONTAK KAMI</NavLink></li>
+                </ul>
+            </nav>
+            <div class="mt-8 border-t border-pink-400 pt-6">
+                <ul class="flex justify-center space-x-4">
+                    <li><a href="https://wa.me/+6285156615269" target="_blank" class="text-pink-200 hover:text-white"><i class="fab fa-whatsapp text-2xl"></i></a></li>
+                    <li><a href="#" target="_blank" class="text-pink-200 hover:text-white"><i class="fab fa-instagram text-2xl"></i></a></li>
+                    <li><a href="#" target="_blank" class="text-pink-200 hover:text-white"><i class="fab fa-facebook-f text-2xl"></i></a></li>
+                </ul>
+                <p class="text-center text-xs text-pink-200 mt-6">© @DateTime.Now.Year New Design Print.</p>
+            </div>
+        </div>
+    }
+
+    @if (isSearchOverlayVisible)
+    {
+        <div class="fixed inset-0 bg-black bg-opacity-75 z-[2000] flex items-center justify-center p-4" @onclick="ToggleSearchOverlay">
+            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-xl relative" @onclick:stopPropagation="true">
+                <button @onclick="ToggleSearchOverlay" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"><i class="fas fa-times text-2xl"></i></button>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Cari Produk</h3>
+                <div class="relative">
+                    <input type="text" @bind="searchOverlayTerm" @bind:event="oninput" @onkeyup="HandleSearchOverlayKeyUp"
+                    class="w-full py-3 px-4 pr-12 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:ring-pink-500 outline-none text-lg"
+                    placeholder="Ketik nama produk..." />
+                    <button @onclick="ExecuteSearchOverlay" class="absolute right-0 top-0 h-full px-4 text-pink-600 hover:text-pink-700"><i class="fas fa-search text-xl"></i></button>
+                </div>
+                @if (searchOverlayResults.Any())
+                {
+                    <div class="mt-6 max-h-60 overflow-y-auto space-y-3">
+                        @foreach (var product in searchOverlayResults)
+                        {
+                            <a href="/produk/@product.Id" @onclick="ToggleSearchOverlay" class="block p-3 bg-gray-50 hover:bg-gray-100 rounded-md">
+                                <h4 class="font-semibold text-pink-700">@product.Name</h4>
+                                <p class="text-sm text-gray-600">@product.Description</p>
+                            </a>
+                        }
+                    </div>
+                }
+                else if (!string.IsNullOrWhiteSpace(searchOverlayTerm) && searchAttempted)
+                {
+                    <p class="mt-6 text-center text-gray-500">Tidak ada hasil untuk "@searchOverlayTerm".</p>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isMobileMenuOpen = false;
+    private bool isProdukSubMenuOpen = false;
+
+    private bool isMiniCartOpen = false;
+    private List<MiniCartItemViewModel> miniCartItems = new();
+    private decimal miniCartTotal = 0;
+
+    private bool isSearchOverlayVisible = false;
+    private string? searchOverlayTerm;
+    private List<ProductViewModel> searchOverlayResults = new();
+    private bool searchAttempted = false;
+
+    // Model-model ini bisa dipindah ke file terpisah di folder Models atau Shared jika digunakan di banyak tempat.
+    public class ProductViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class MiniCartItemViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+    }
+     
+
+    protected override void OnInitialized()
+    {
+        CartService.OnCartChanged += UpdateMiniCart; // Berlangganan event
+    }
+
+    public void Dispose() // Implementasi IDisposable
+    {
+        CartService.OnCartChanged -= UpdateMiniCart; // Berhenti langganan
+    }
+
+    private void UpdateMiniCart()
+    {
+        InvokeAsync(StateHasChanged); // Memicu UI update untuk header
+    }
+
+
+    private void CalculateMiniCartTotal()
+    {
+        miniCartTotal = miniCartItems.Sum(item => item.Price * item.Quantity);
+    }
+
+    private void RemoveMiniCartItem(int itemId)
+    {
+        var itemToRemove = miniCartItems.FirstOrDefault(item => item.Id == itemId);
+        if (itemToRemove != null)
+        {
+            miniCartItems.Remove(itemToRemove);
+            CalculateMiniCartTotal();
+        }
+    }
+
+    private void ToggleMobileMenu()
+    {
+        isMobileMenuOpen = !isMobileMenuOpen;
+        if (!isMobileMenuOpen) { isProdukSubMenuOpen = false; } // Tutup submenu jika menu utama ditutup
+    }
+
+    private void NavigateAndCloseMenu(string uri)
+    {
+        NavigationManager.NavigateTo(uri);
+        isMobileMenuOpen = false;
+        isProdukSubMenuOpen = false;
+    }
+
+    private void ToggleMobileSubMenu(ref bool subMenuFlag) => subMenuFlag = !subMenuFlag;
+    private void ToggleMiniCart() => isMiniCartOpen = !isMiniCartOpen;
+
+    private void ToggleSearchOverlay()
+    {
+        isSearchOverlayVisible = !isSearchOverlayVisible;
+        if (!isSearchOverlayVisible) { searchOverlayTerm = string.Empty; searchOverlayResults.Clear(); searchAttempted = false; }
+    }
+
+    private void HandleSearchOverlayKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") ExecuteSearchOverlay();
+        else if (e.Key == "Escape") ToggleSearchOverlay();
+    }
+
+    private void ExecuteSearchOverlay() // Simulasi pencarian
+    {
+        searchAttempted = true;
+        if (string.IsNullOrWhiteSpace(searchOverlayTerm)) { searchOverlayResults.Clear(); return; }
+        var allProducts = new List<ProductViewModel> { // Contoh data, idealnya dari service
+            new ProductViewModel { Id = 101, Name = "Kaos Polos Premium", Description = "Bahan katun combed 30s." },
+            new ProductViewModel { Id = 102, Name = "Payung Golf Otomatis", Description = "Diameter besar, rangka kuat." },
+            new ProductViewModel { Id = 103, Name = "Mug Custom Foto", Description = "Cetak foto kenangan Anda." }};
+        searchOverlayResults = allProducts.Where(p => p.Name.Contains(searchOverlayTerm, StringComparison.OrdinalIgnoreCase) || p.Description.Contains(searchOverlayTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+     
+
+    // Fungsi untuk styling NavLink aktif di desktop.
+    // Ini lebih baik ditangani dengan kelas NavLink jika memungkinkan, tapi untuk kontrol penuh:
+    private string GetNavLinkClass(string href, bool matchAll = false)
+    {
+        var currentUri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri).AbsolutePath;
+        bool isActive = matchAll ? currentUri.Equals(href, StringComparison.OrdinalIgnoreCase) : currentUri.StartsWith(href, StringComparison.OrdinalIgnoreCase);
+
+        string baseClass = "nav-link text-gray-700 hover:text-pink-600 font-semibold uppercase text-sm tracking-wider";
+        if (isActive)
+        {
+            return baseClass + " text-pink-600 border-b-2 border-pink-600";
+        }
+        return baseClass;
+    }
+}

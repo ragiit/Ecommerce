@@ -1,0 +1,140 @@
+﻿@page "/about-us"
+ 
+@rendermode InteractiveServer 
+@inject NavigationManager NavigationManager
+
+<PageTitle>Tentang Kami | New Design Print</PageTitle>
+
+<div class="bg-white">
+    <section class="bg-gradient-to-r from-pink-600 to-purple-700 text-white py-20 md:py-28">
+        <div class="container mx-auto px-4 sm:px-6 text-center">
+            <h1 class="text-4xl lg:text-5xl font-bold mb-4 animate-fade-in-down">Tentang New Design Print</h1>
+            <p class="text-lg lg:text-xl max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 0.3s;">
+                Partner terpercaya Anda untuk solusi cetak custom berkualitas tinggi dengan layanan prima.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-12 sm:py-16 lg:py-20">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto">
+
+                <div class="mb-12 md:mb-16 wow-animate-fadeIn" data-wow-delay="0.2s">
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 text-center sm:text-left">Siapa Kami?</h2>
+                    <div class="prose prose-lg max-w-none text-gray-600 leading-relaxed">
+                        <p>
+                            New Design Print adalah sebuah usaha yang berdedikasi untuk menyediakan solusi percetakan custom dan merchandise promosi berkualitas tinggi. Berdiri sejak [Tahun Berdiri Anda - misal: 2015], kami telah melayani berbagai macam klien, mulai dari individu, UMKM, komunitas, hingga perusahaan besar.
+                        </p>
+                        <p>
+                            Kami percaya bahwa setiap ide brilian layak diwujudkan dalam bentuk produk fisik yang menarik dan berkualitas. Dengan semangat kreativitas dan komitmen terhadap kepuasan pelanggan, kami hadir untuk membantu Anda mencetak kaos custom, seragam, souvenir unik, media promosi, dan berbagai produk lainnya sesuai dengan imajinasi dan kebutuhan Anda.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-12 md:mb-16 grid md:grid-cols-2 gap-8 items-center">
+                    <div class="wow-animate-slideInLeft" data-wow-delay="0.3s">
+                        <h3 class="text-xl sm:text-2xl font-semibold text-pink-600 mb-3">Visi Kami</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Menjadi penyedia solusi cetak custom dan merchandise terdepan di Indonesia yang dikenal akan kualitas, inovasi, dan pelayanan pelanggan yang unggul.
+                        </p>
+                    </div>
+                    <div class="wow-animate-slideInRight" data-wow-delay="0.4s">
+                        <h3 class="text-xl sm:text-2xl font-semibold text-purple-700 mb-3">Misi Kami</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 pl-2 leading-relaxed">
+                            <li>Menyediakan produk cetak custom dengan standar kualitas tertinggi menggunakan material terbaik dan teknologi terkini.</li>
+                            <li>Memberikan layanan konsultasi dan desain yang responsif, kreatif, dan solutif untuk setiap kebutuhan pelanggan.</li>
+                            <li>Membangun hubungan jangka panjang yang saling menguntungkan dengan pelanggan, mitra, dan karyawan.</li>
+                            <li>Terus berinovasi dalam produk, layanan, dan proses kerja untuk efisiensi dan hasil yang optimal.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-12 md:mb-16 wow-animate-fadeInUp" data-wow-delay="0.5s">
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 text-center">Nilai-Nilai Kami</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                        <div class="p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <div class="text-pink-600 mb-3"><i class="fas fa-medal fa-3x"></i></div>
+                            <h4 class="text-xl font-semibold text-gray-700 mb-2">Kualitas</h4>
+                            <p class="text-gray-600 text-sm">Kami tidak berkompromi pada kualitas. Setiap produk kami kerjakan dengan detail dan presisi.</p>
+                        </div>
+                        <div class="p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <div class="text-purple-700 mb-3"><i class="fas fa-lightbulb fa-3x"></i></div>
+                            <h4 class="text-xl font-semibold text-gray-700 mb-2">Kreativitas & Inovasi</h4>
+                            <p class="text-gray-600 text-sm">Kami selalu mencari ide-ide baru dan solusi kreatif untuk kebutuhan custom Anda.</p>
+                        </div>
+                        <div class="p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <div class="text-green-500 mb-3"><i class="fas fa-users fa-3x"></i></div>
+                            <h4 class="text-xl font-semibold text-gray-700 mb-2">Kepuasan Pelanggan</h4>
+                            <p class="text-gray-600 text-sm">Kepuasan Anda adalah prioritas utama kami. Kami siap melayani dengan sepenuh hati.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 md:mb-16 wow-animate-fadeIn" data-wow-delay="0.6s">
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 text-center sm:text-left">Mengapa Memilih Kami?</h2>
+                    <ul class="list-none space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-600 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Hasil Cetak Berkualitas Tinggi</h4>
+                                <p class="text-gray-600 text-sm">Menggunakan teknologi cetak modern dan bahan baku pilihan untuk hasil yang detail dan tahan lama.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-600 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Layanan Konsultasi Desain Gratis</h4>
+                                <p class="text-gray-600 text-sm">Tim kami siap membantu Anda mewujudkan desain impian, bahkan jika Anda belum memiliki desain final.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-600 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Proses Cepat & Tepat Waktu</h4>
+                                <p class="text-gray-600 text-sm">Kami menghargai waktu Anda dan berkomitmen untuk menyelesaikan pesanan sesuai jadwal.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-600 text-xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Harga Kompetitif</h4>
+                                <p class="text-gray-600 text-sm">Menawarkan kualitas terbaik dengan harga yang bersaing dan transparan.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="wow-animate-fadeInUp" data-wow-delay="0.7s">
+                    <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 text-center">Tim Kami</h2>
+                    <p class="text-gray-600 leading-relaxed text-center max-w-xl mx-auto">
+                        Didukung oleh tim profesional yang berpengalaman dan bersemangat di bidang desain grafis dan produksi cetak, kami siap memberikan yang terbaik untuk setiap proyek Anda.
+                    </p>
+                </div>
+
+                <div class="mt-12 md:mt-16 text-center wow-animate-fadeIn" data-wow-delay="0.8s">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Siap Mewujudkan Ide Anda?</h3>
+                    <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button @onclick='() => NavigationManager.NavigateTo("/produk")' class="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-8 rounded-md transition-colors text-sm uppercase tracking-wider">
+                            Lihat Produk Kami
+                        </button>
+                        <button @onclick='() => NavigationManager.NavigateTo("/contact")' class="w-full sm:w-auto bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 px-8 rounded-md transition-colors text-sm uppercase tracking-wider">
+                            Hubungi Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    // Jika ada logika khusus halaman, tambahkan di sini.
+    // Untuk halaman statis seperti ini, mungkin tidak banyak.
+    // private bool isLoading = true; // Jika ingin menggunakan loader per halaman
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await Task.Delay(300); // Simulasi loading konten halaman
+    //     isLoading = false;
+    // }
+}

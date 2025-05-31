@@ -1,0 +1,74 @@
+﻿@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+@if (initialized)
+{
+    <button @onclick="ScrollToTop"
+            class="fixed bottom-6 right-6 bg-pink-600 hover:bg-pink-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-50 transition-opacity @(showScrollTopButton ? "opacity-100" : "opacity-0 pointer-events-none")">
+        <i class="fas fa-angle-up text-xl"></i>
+    </button>
+}
+
+@code {
+    private bool showScrollTopButton = false;
+    private bool initialized = false;
+    private DotNetObjectReference<ScrollToTopButton>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+       try
+        {
+            if (firstRender)
+            {
+                _dotNetRef = DotNetObjectReference.Create(this);
+                await JSRuntime.InvokeVoidAsync("registerScrollListener", _dotNetRef);
+            }
+        }
+        catch (Exception)
+        { 
+        }
+    }
+
+    private async Task ScrollToTop()
+    {
+        try
+        {
+
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    [JSInvokable]
+    public void OnScrollChanged(double scrollY)
+    {
+        try
+        {
+
+            showScrollTopButton = scrollY > 100;
+            initialized = true;
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+
+            await JSRuntime.InvokeVoidAsync("unregisterScrollListener");
+            _dotNetRef?.Dispose();
+        }
+        catch (Exception)
+        {
+             
+        }
+    }
+}

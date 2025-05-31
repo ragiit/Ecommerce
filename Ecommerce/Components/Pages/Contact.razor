@@ -1,0 +1,267 @@
+﻿ 
+@page "/contact"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@using System.Web  
+
+<PageTitle>New Design Print | Solusi Produk Custom Berkualitas | Kontak Kami</PageTitle>
+
+<div class="font-poppins text-gray-700">
+     
+    <div class="map-load h-72 md:h-96 bg-gray-300">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.576989248701!2d106.82260431431488!3d-6.187010962397975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f42317c69379%3A0x18a8171d00ea6539!2sNational%20Gallery%20of%20Indonesia!5e0!3m2!1sen!2sid!4v1622470000000"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <section class="contact-sec py-12 sm:py-16 lg:py-20 bg-white" id="contact-sec">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                <div class="contact-description wow-animate-slideInLeft" data-wow-delay=".2s">
+                    <div class="contact-detail p-6 rounded-lg shadow-lg bg-gray-50">
+                        <span class="text-sm font-semibold text-pink-600 uppercase tracking-wider">KONTAK KAMI</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-1 mb-4">Hubungi <span class="text-pink-600">Tim Kami</span></h2>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Punya pertanyaan, butuh konsultasi desain, atau ingin langsung order produk custom Anda? Tim New Design Print siap membantu!
+                        </p>
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-semibold text-gray-700 border-b pb-2">New Design Print - Jakarta</h4>
+                            <a href="https://wa.me/+6285156615269?text=Halo%20New%20Design%20Print" target="_blank" class="flex items-center text-gray-700 hover:text-pink-600 transition-colors">
+                                <i class="fab fa-whatsapp text-pink-600 text-xl w-6 mr-3"></i> +62 851-5661-5269 (WhatsApp)
+                            </a>
+                            <a href="mailto:info@newdesignprint.com" class="flex items-center text-gray-700 hover:text-pink-600 transition-colors">
+                                <i class="fas fa-envelope text-pink-600 text-xl w-6 mr-3"></i> info@newdesignprint.com
+                            </a>
+                            <div class="flex items-start text-gray-700">
+                                <i class="fas fa-map-marker-alt text-pink-600 text-xl w-6 mr-3 mt-1"></i>
+                                <div>
+                                    Jl. Contoh Alamat Proyek No. 123 <br />Jakarta Pusat, DKI Jakarta, Indonesia
+                                    <a href="https://maps.app.goo.gl/example" target="_blank" class="text-xs text-pink-600 hover:underline ml-1">(Lihat Peta)</a>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-clock text-pink-600 text-xl w-6 mr-3"></i> Senin - Sabtu: 09:00 - 17:00 WIB
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-box text-left wow-animate-slideInRight" data-wow-delay=".4s">
+                    <div class="p-6 md:p-8 rounded-lg shadow-xl bg-white border border-gray-200">
+                        <h4 class="text-2xl font-semibold text-gray-800 mb-6">Tinggalkan Pesan</h4>
+                        @if (!string.IsNullOrEmpty(formResultMessage))
+                        {
+                            <div class="mb-4 p-3 rounded-md @(formResultSuccess ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
+                                @formResultMessage
+                            </div>
+                        }
+                        <EditForm Model="contactModel" OnValidSubmit="SubmitContactFormToWhatsAppAsync" class="space-y-5">
+                            <DataAnnotationsValidator />
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="wa_fname" class="block text-sm font-medium text-gray-700 mb-1">Nama Depan</label>
+                                    <InputText id="wa_fname" @bind-Value="contactModel.FirstName" class="form-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm" placeholder="John" />
+                                    <ValidationMessage For="@(() => contactModel.FirstName)" class="text-red-500 text-xs mt-1" />
+                                </div>
+                                <div>
+                                    <label for="wa_lname" class="block text-sm font-medium text-gray-700 mb-1">Nama Belakang</label>
+                                    <InputText id="wa_lname" @bind-Value="contactModel.LastName" class="form-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm" placeholder="Doe" />
+                                    <ValidationMessage For="@(() => contactModel.LastName)" class="text-red-500 text-xs mt-1" />
+                                </div>
+                            </div>
+                            <div>
+                                <label for="wa_email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
+                                <InputText type="email" id="wa_email" @bind-Value="contactModel.Email" class="form-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm" placeholder="anda@contoh.com" />
+                                <ValidationMessage For="@(() => contactModel.Email)" class="text-red-500 text-xs mt-1" />
+                            </div>
+                            <div>
+                                <label for="wa_subject" class="block text-sm font-medium text-gray-700 mb-1">Subjek Pesan</label>
+                                <InputText id="wa_subject" @bind-Value="contactModel.Subject" class="form-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm" placeholder="Pertanyaan tentang produk kaos" />
+                                <ValidationMessage For="@(() => contactModel.Subject)" class="text-red-500 text-xs mt-1" />
+                            </div>
+                            <div>
+                                <label for="wa_message" class="block text-sm font-medium text-gray-700 mb-1">Isi Pesan Anda</label>
+                                <InputTextArea id="wa_message" @bind-Value="contactModel.Message" rows="5" class="form-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm" placeholder="Detail pertanyaan atau permintaan Anda..." />
+                                <ValidationMessage For="@(() => contactModel.Message)" class="text-red-500 text-xs mt-1" />
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors">
+                                    KIRIM VIA WHATSAPP
+                                </button>
+                            </div>
+                        </EditForm>
+                        <small class="block mt-4 text-xs text-gray-500">
+                            <i>Dengan mengklik tombol di atas, Anda akan diarahkan ke WhatsApp dengan pesan yang telah diisi sesuai data form.</i>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+     
+</div>
+
+@code {
+    private bool isLoading = true;
+    private bool showScrollTopButton = false; // Akan di-set true setelah loading untuk demo sederhana
+    private bool isSearchOverlayVisible = false;
+    private string? searchOverlayTerm;
+    private List<ProductViewModel> searchOverlayResults = new();
+    private bool searchAttempted = false;
+
+    private bool isMobileMenuOpen = false;
+    private bool isProdukSubMenuOpen = false;
+    private bool isMiniCartOpen = false;
+    private List<MiniCartItemViewModel> miniCartItems = new();
+    private decimal miniCartTotal = 0;
+
+    private ContactFormModel contactModel = new();
+    private string? formResultMessage;
+    private bool formResultSuccess = false;
+
+    // Nomor WhatsApp Tujuan
+    private const string WhatsAppTargetNumber = "+6285156615269";
+
+
+    public class ProductViewModel // Diletakkan di sini untuk kesederhanaan, idealnya di file terpisah
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class MiniCartItemViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+    }
+
+    public class ContactFormModel
+    {
+        [Required(ErrorMessage = "Nama depan wajib diisi.")]
+        [StringLength(50, ErrorMessage = "Nama depan maksimal 50 karakter.")]
+        public string FirstName { get; set; } = "";
+
+        [Required(ErrorMessage = "Nama belakang wajib diisi.")]
+        [StringLength(50, ErrorMessage = "Nama belakang maksimal 50 karakter.")]
+        public string LastName { get; set; } = "";
+
+        [Required(ErrorMessage = "Alamat email wajib diisi.")]
+        [EmailAddress(ErrorMessage = "Format alamat email tidak valid.")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Subjek pesan wajib diisi.")]
+        [StringLength(100, ErrorMessage = "Subjek pesan maksimal 100 karakter.")]
+        public string Subject { get; set; } = "";
+
+        [Required(ErrorMessage = "Isi pesan wajib diisi.")]
+        [StringLength(1000, ErrorMessage = "Isi pesan maksimal 1000 karakter.")]
+        public string Message { get; set; } = "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500); // Simulasi loading
+        isLoading = false;
+        showScrollTopButton = true; // Tampilkan tombol scroll setelah load (demo sederhana)
+
+        // Contoh data mini cart
+        miniCartItems = new List<MiniCartItemViewModel>
+        {
+            new MiniCartItemViewModel { Id = 1, Name = "Payung Lipat Custom", Description = "Desain Sesuai Keinginan", Price = 75000, Quantity = 1, ImageUrl = "https://placehold.co/50x50/E2E8F0/A0AEC0?text=Payung" },
+        };
+        CalculateMiniCartTotal();
+    }
+
+    private async Task SubmitContactFormToWhatsAppAsync()
+    {
+        formResultMessage = null; // Reset pesan sebelumnya
+
+        // Konstruksi pesan WhatsApp
+        var waMessage = $"Halo New Design Print,\n\nSaya ingin mengirim pesan dari website:\n------------------------------------\n";
+        waMessage += $"Nama: {contactModel.FirstName} {contactModel.LastName}\n";
+        waMessage += $"Email: {contactModel.Email}\n";
+        waMessage += $"Subjek: {contactModel.Subject}\n\n";
+        waMessage += $"Pesan:\n{contactModel.Message}\n------------------------------------\n";
+        waMessage += $"Mohon informasinya, terima kasih.";
+
+        var encodedMessage = HttpUtility.UrlEncode(waMessage);
+        var whatsappURL = $"https://wa.me/{WhatsAppTargetNumber.Replace("+", "")}?text={encodedMessage}";
+
+        // Navigasi ke URL WhatsApp (membuka di tab/aplikasi baru)
+        // Perhatikan: Navigasi langsung mungkin diblokir oleh browser jika tidak dipicu oleh interaksi pengguna langsung
+        // seperti klik tombol. Namun, karena ini OnValidSubmit dari EditForm, biasanya aman.
+        NavigationManager.NavigateTo(whatsappURL, forceLoad: true); // forceLoad: true untuk memastikan navigasi eksternal
+
+        formResultSuccess = true;
+        formResultMessage = "Anda akan diarahkan ke WhatsApp. Jika tidak, silakan klik link ini: "; // Pesan bisa disesuaikan
+
+        // Reset form (opsional)
+        // contactModel = new();
+        // StateHasChanged(); // Diperlukan jika mereset model setelah submit
+    }
+
+    private void CalculateMiniCartTotal()
+    {
+        miniCartTotal = miniCartItems.Sum(item => item.Price * item.Quantity);
+    }
+
+    private void RemoveMiniCartItem(int itemId)
+    {
+        var itemToRemove = miniCartItems.FirstOrDefault(item => item.Id == itemId);
+        if (itemToRemove != null)
+        {
+            miniCartItems.Remove(itemToRemove);
+            CalculateMiniCartTotal();
+        }
+    }
+
+    private void ToggleMobileMenu()
+    {
+        isMobileMenuOpen = !isMobileMenuOpen;
+        if (!isMobileMenuOpen) { isProdukSubMenuOpen = false; }
+    }
+
+    private void NavigateAndCloseMenu(string uri)
+    {
+        NavigationManager.NavigateTo(uri);
+        isMobileMenuOpen = false;
+        isProdukSubMenuOpen = false;
+    }
+
+    private void ToggleMobileSubMenu(ref bool subMenuFlag) => subMenuFlag = !subMenuFlag;
+    private void ToggleMiniCart() => isMiniCartOpen = !isMiniCartOpen;
+
+    private void ScrollToTop() // Memerlukan JS Interop untuk scroll aktual
+    {
+        Console.WriteLine("Scroll to top clicked. Implement with JS Interop.");
+        // Contoh: await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+
+    private void ToggleSearchOverlay()
+    {
+        isSearchOverlayVisible = !isSearchOverlayVisible;
+        if (!isSearchOverlayVisible) { searchOverlayTerm = string.Empty; searchOverlayResults.Clear(); searchAttempted = false; }
+    }
+
+    private void HandleSearchOverlayKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") ExecuteSearchOverlay();
+        else if (e.Key == "Escape") ToggleSearchOverlay();
+    }
+
+    private void ExecuteSearchOverlay() // Simulasi pencarian
+    {
+        searchAttempted = true;
+        if (string.IsNullOrWhiteSpace(searchOverlayTerm)) { searchOverlayResults.Clear(); return; }
+        var allProducts = new List<ProductViewModel> {
+            new ProductViewModel { Id = 101, Name = "Kaos Polos Premium", Description = "Bahan katun combed 30s." },
+            new ProductViewModel { Id = 102, Name = "Payung Golf Otomatis", Description = "Diameter besar, rangka kuat." } };
+        searchOverlayResults = allProducts.Where(p => p.Name.Contains(searchOverlayTerm, StringComparison.OrdinalIgnoreCase) || p.Description.Contains(searchOverlayTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+}

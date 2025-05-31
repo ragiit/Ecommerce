@@ -1,0 +1,54 @@
+﻿ 
+
+@rendermode InteractiveServer
+
+@if (IsLoading)
+{
+    <div id="preloader" class="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
+        <div class="loader-inner">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-600"></div>
+            <p class="mt-4 text-pink-600">Loading...</p>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsLoading { get; set; } = true;
+
+    [Parameter]
+    public int LoadingTimeMilliseconds { get; set; } = 1000; // Waktu loading default
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (IsLoading) // Hanya jalankan delay jika IsLoading awalnya true
+            {
+                await Task.Delay(LoadingTimeMilliseconds);
+                IsLoading = false;
+                StateHasChanged(); // Panggil StateHasChanged untuk memberitahu UI bahwa IsLoading telah berubah
+            }
+        }
+        catch (Exception)
+        { 
+        }
+    }
+
+    // Metode publik untuk mengontrol loader dari luar jika diperlukan
+    public void ShowLoader()
+    {
+        IsLoading = true;
+        StateHasChanged();
+    }
+
+    public async Task HideLoaderAfterDelay(int delayMilliseconds = 0)
+    {
+        if (delayMilliseconds > 0)
+        {
+            await Task.Delay(delayMilliseconds);
+        }
+        IsLoading = false;
+        StateHasChanged();
+    }
+}
