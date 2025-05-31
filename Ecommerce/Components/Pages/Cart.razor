@@ -33,7 +33,7 @@
                             <img src="@item.ImageUrl" alt="@item.ProductName" class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-md shadow-sm flex-shrink-0" />
                             <div class="flex-grow text-center sm:text-left">
                                 <h2 class="text-lg sm:text-xl font-semibold text-gray-800 hover:text-pink-600 transition-colors">
-                                    <a href="@($"/produk/{item.ProductId}")">@item.ProductName</a>
+                                    <a href="@($"/products/{item.ProductId}")">@item.ProductName</a>
                                 </h2>
                                 <p class="text-pink-600 font-semibold text-md">@item.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID"))</p>
                             </div>

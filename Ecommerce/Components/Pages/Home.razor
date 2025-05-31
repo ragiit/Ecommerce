@@ -60,36 +60,51 @@
         </div>
     </div>
     <div class="latest-arrivals py-12 sm:py-16 lg:py-20 bg-white">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="text-center mb-10 sm:mb-12">
+        <div class="container mx-auto px-0 sm:px-6"> 
+            <div class="px-4 sm:px-0 text-center mb-10 sm:mb-12"> 
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-3">Produk & Desain Terbaru</h1>
                 <p class="text-gray-600 max-w-2xl mx-auto">
                     Lihat beberapa contoh produk dan inspirasi desain terbaru dari New Design Print.
                 </p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+             
+            <div class="flex overflow-x-auto pb-6 pt-2 space-x-6 scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-pink-100 scrollbar-thumb-rounded-full"> 
+                <div class="pl-4 sm:pl-0"></div>  
+
                 @for (int i = 1; i <= 20; i++)
                 {
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden group border border-gray-200 wow-animate-fadeIn" data-wow-delay="@((i * 0.15).ToString("F1"))s">
-                        <div class="relative">
-                            <a href="https://placehold.co/800x800/E2E8F0/A0AEC0?text=Produk+Terbaru+@i" data-fancybox="latest-products" data-caption="Produk Terbaru @i">
-                                <img src="https://placehold.co/400x400/FBCFE8/831843?text=Produk+Terbaru+@i" alt="Produk Terbaru @i" class="w-full h-72 object-cover" />
-                            </a>
-                            <a href="https://wa.me/+6285156615269?text=Halo%20New%20Design%20Print%2C%20saya%20tertarik%20dengan%20Produk%20Terbaru%20@i" target="_blank"
-                               class="absolute top-3 right-3 bg-green-500 text-white p-2 rounded-full shadow-md hover:bg-green-600 transition-colors" title="Pesan via WhatsApp">
-                                <i class="fab fa-whatsapp text-xl"></i>
-                            </a>
-                            <span class="absolute top-3 left-3 bg-pink-600 text-white text-xs font-semibold px-2 py-1 rounded">BARU</span>
-                        </div>
-                        <div class="p-5 text-center">
-                            <h5 class="text-lg font-semibold text-gray-800 mb-1 h-14 overflow-hidden">Produk Terbaru @i</h5>
-                            <p class="text-sm text-gray-500">Info singkat produk @i</p>
+                    // Setiap item kartu sekarang memiliki lebar tetap dan tidak akan menyusut
+                    <div class="flex-shrink-0 w-64 sm:w-72 md:w-80">  
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col group border border-gray-200 wow-animate-fadeIn" data-wow-delay="@((i * 0.1).ToString("F1"))s">
+                            <div class="relative">
+                                <a href="https://placehold.co/800x800/E2E8F0/A0AEC0?text=Produk+Terbaru+@i" data-fancybox="latest-products" data-caption="Produk Terbaru @i">
+                                    <img src="https://placehold.co/400x400/FBCFE8/831843?text=Produk+Terbaru+@i" alt="Produk Terbaru @i" class="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300" />
+                                </a>
+                                <a href="https://wa.me/+6285156615269?text=Halo%20New%20Design%20Print%2C%20saya%20tertarik%20dengan%20Produk%20Terbaru%20@i" target="_blank"
+                                   class="absolute top-3 right-3 bg-green-500 text-white p-2 rounded-full shadow-md hover:bg-green-600 transition-colors" title="Pesan via WhatsApp">
+                                    <i class="fab fa-whatsapp text-xl"></i>
+                                </a>
+                                <span class="absolute top-3 left-3 bg-pink-600 text-white text-xs font-semibold px-2 py-1 rounded">BARU</span>
+                            </div>
+                            <div class="p-5 text-center flex flex-col flex-grow">
+                                <h5 class="text-lg font-semibold text-gray-800 mb-1 h-14 overflow-hidden group-hover:text-pink-600 transition-colors">Produk Terbaru @i</h5>
+                                <p class="text-sm text-gray-500 mb-3 flex-grow">Info singkat produk @i</p>
+                                @{
+                                    var slug = $"produk-terbaru-{i}";
+                                }
+                                <a href="javascript:void(0);" @onclick="() => NavigateToProductDetail(slug)"
+                                   class="mt-auto inline-block w-full bg-gray-700 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-colors">
+                                    Lihat Detail
+                                </a>
+
+                            </div>
                         </div>
                     </div>
-                }
+                } 
+                <div class="pr-4 sm:pr-0"></div> 
             </div>
         </div>
-    </div> 
+    </div>
 </div>
 
 @code {
@@ -107,6 +122,12 @@
     private bool isMiniCartOpen = false;
     private List<MiniCartItemViewModel> miniCartItems = new List<MiniCartItemViewModel>();
     private decimal miniCartTotal = 0;
+    private void NavigateToProductDetail(string productId)
+    {
+        // Navigasi ke halaman detail produk. Anda perlu membuat halaman detail yang sesuai.
+        // productId di sini adalah contoh, Anda mungkin memiliki ID produk yang sebenarnya.
+        NavigationManager.NavigateTo($"/products/{productId}");
+    }
 
 
     // Contoh data produk view model untuk hasil pencarian

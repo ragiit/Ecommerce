@@ -99,21 +99,21 @@
                                     <ul class="space-y-2">
                                         <li>
                                             <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
-                                            href="/produk/kaos"
+                                            href="/products/kaos"
                                             ActiveClass="text-pink-600 font-semibold">
                                                 <i class="fas fa-angle-right text-xs mr-1"></i>Kaos & T-Shirt
                                             </NavLink>
                                         </li>
                                         <li>
                                             <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
-                                            href="/produk/polo"
+                                            href="/products/polo"
                                             ActiveClass="text-pink-600 font-semibold">
                                                 <i class="fas fa-angle-right text-xs mr-1"></i>Polo Shirt
                                             </NavLink>
                                         </li>
                                         <li>
                                             <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
-                                            href="/produk/jaket"
+                                            href="/products/jaket"
                                             ActiveClass="text-pink-600 font-semibold">
                                                 <i class="fas fa-angle-right text-xs mr-1"></i>Jaket & Hoodie
                                             </NavLink>
@@ -125,14 +125,14 @@
                                     <ul class="space-y-2">
                                         <li>
                                             <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
-                                            href="/produk/payung"
+                                            href="/products/payung"
                                             ActiveClass="text-pink-600 font-semibold">
                                                 <i class="fas fa-angle-right text-xs mr-1"></i>Payung Custom
                                             </NavLink>
                                         </li>
                                         <li>
                                             <NavLink class="dropdown-item text-sm text-gray-600 hover:text-pink-600"
-                                            href="/produk/mug"
+                                            href="/products/mug"
                                             ActiveClass="text-pink-600 font-semibold">
                                                 <i class="fas fa-angle-right text-xs mr-1"></i>Mug & Tumbler
                                             </NavLink>
@@ -142,17 +142,17 @@
                                 <div class="col-span-2">
                                     <h5 class="dropdown-title text-md font-bold text-gray-800 mb-3">Produk Unggulan</h5>
                                     <div class="grid grid-cols-3 gap-4">
-                                        <NavLink href="/produk/payung">
+                                        <NavLink href="/products/payung">
                                             <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Payung"
                                             alt="Custom Payung"
                                             class="rounded hover:opacity-80 transition-opacity" />
                                         </NavLink>
-                                        <NavLink href="/produk/kaos">
+                                        <NavLink href="/products/kaos">
                                             <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Kaos"
                                             alt="Custom Kaos"
                                             class="rounded hover:opacity-80 transition-opacity" />
                                         </NavLink>
-                                        <NavLink href="/produk/mug">
+                                        <NavLink href="/products/mug">
                                             <img src="https://placehold.co/150x100/E2E8F0/A0AEC0?text=Mug"
                                             alt="Custom Mug"
                                             class="rounded hover:opacity-80 transition-opacity" />
@@ -161,7 +161,7 @@
                                     <p class="mt-4 text-sm text-gray-600">
                                         Temukan berbagai produk custom berkualitas untuk promosi dan personal Anda.
                                     </p>
-                                    <NavLink href="/produk"
+                                    <NavLink href="/products"
                                     class="inline-block mt-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold py-2 px-4 rounded-md transition-colors">
                                         Lihat Katalog
                                     </NavLink>
@@ -176,6 +176,14 @@
                     href="/contact"
                     ActiveClass="text-pink-600 border-b-2 border-pink-600">
                         Kontak Kami
+                    </NavLink>
+                </li>
+
+                <li class="nav-item">
+                    <NavLink class="nav-link font-semibold uppercase text-sm tracking-wider text-gray-700 hover:text-pink-600"
+                             href="/faq"
+                             ActiveClass="text-pink-600 border-b-2 border-pink-600">
+                        FAQ
                     </NavLink>
                 </li>
 
@@ -231,10 +239,10 @@
                         @if (isProdukSubMenuOpen)
                         {
                             <ul class="pl-4 mt-1 space-y-1">
-                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/kaos")' href="/produk/kaos" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Kaos & T-Shirt</NavLink></li>
-                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/polo")' href="/produk/polo" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Polo Shirt</NavLink></li>
-                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk/payung")' href="/produk/payung" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Payung Custom</NavLink></li>
-                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/produk")' href="/produk" class="block py-1 px-2 text-pink-200 hover:text-white text-sm font-semibold">Lihat Semua...</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/products/kaos")' href="/products/kaos" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Kaos & T-Shirt</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/products/polo")' href="/products/polo" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Polo Shirt</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/products/payung")' href="/products/payung" class="block py-1 px-2 text-pink-200 hover:text-white text-sm">Payung Custom</NavLink></li>
+                                <li><NavLink @onclick='() => NavigateAndCloseMenu("/products")' href="/products" class="block py-1 px-2 text-pink-200 hover:text-white text-sm font-semibold">Lihat Semua...</NavLink></li>
                             </ul>
                         }
                     </li>
@@ -271,7 +279,7 @@
                     <div class="mt-6 max-h-60 overflow-y-auto space-y-3">
                         @foreach (var product in searchOverlayResults)
                         {
-                            <a href="/produk/@product.Id" @onclick="ToggleSearchOverlay" class="block p-3 bg-gray-50 hover:bg-gray-100 rounded-md">
+                            <a href="/products/@product.Id" @onclick="ToggleSearchOverlay" class="block p-3 bg-gray-50 hover:bg-gray-100 rounded-md">
                                 <h4 class="font-semibold text-pink-700">@product.Name</h4>
                                 <p class="text-sm text-gray-600">@product.Description</p>
                             </a>
