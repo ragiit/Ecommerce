@@ -130,17 +130,7 @@ else
 
     private const string DefaultWhatsAppNumber = "6285156615269"; // Ganti dengan nomor WA default Anda
 
-    public class ProductItem
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string Name { get; set; } = string.Empty;
-        public string ShortDescription { get; set; } = string.Empty;
-        public decimal Price { get; set; } // 0 jika harga "Hubungi Kami"
-        public string ImageUrl { get; set; } = "https://placehold.co/400x300/E2E8F0/A0AEC0?text=Produk";
-        public string Category { get; set; } = string.Empty;
-        public string Tag { get; set; } = string.Empty; // Misalnya "BARU", "DISKON"
-        public string WhatsAppNumber { get; set; } = DefaultWhatsAppNumber; // Bisa di-override per produk
-    }
+ 
 
     protected override async Task OnInitializedAsync()
     {

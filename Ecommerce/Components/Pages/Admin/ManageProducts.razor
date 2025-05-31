@@ -1,0 +1,273 @@
+﻿ 
+
+@page "/admin/manage-products"
+@attribute [StreamRendering]  
+@rendermode InteractiveServer 
+ @* @attribute [Authorize(Roles = "Admin")]  *@
+
+@inject ProductAdminService ProductService
+@inject NavigationManager NavigationManager  
+
+<PageTitle>Manage Products | Admin Panel</PageTitle>
+
+<div class="container mx-auto px-4 sm:px-6 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Manajemen Produk</h1>
+        <button @onclick="StartAddNewProduct" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-5 rounded-md shadow transition-colors">
+            <i class="fas fa-plus mr-2"></i> Tambah Produk Baru
+        </button>
+    </div>
+
+    @if (showProductForm)
+    {
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-40" @onclick="CancelEdit"></div>
+        <div class="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <h2 class="text-xl font-semibold mb-5">@(isEditing ? "Edit Produk" : "Tambah Produk Baru")</h2>
+                <EditForm Model="currentProductModel" OnValidSubmit="HandleValidSubmitProduct">
+                    <DataAnnotationsValidator />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                            <InputText id="name" @bind-Value="currentProductModel.Name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                            <ValidationMessage For="@(() => currentProductModel.Name)" />
+                        </div>
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700">Kategori</label>
+                            <InputText id="category" @bind-Value="currentProductModel.Category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                            <ValidationMessage For="@(() => currentProductModel.Category)" />
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="shortDesc" class="block text-sm font-medium text-gray-700">Deskripsi Singkat</label>
+                        <InputTextArea id="shortDesc" @bind-Value="currentProductModel.ShortDescription" rows="2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                    </div>
+                     <div class="mb-4">
+                        <label for="fullDesc" class="block text-sm font-medium text-gray-700">Deskripsi Lengkap</label>
+                        <InputTextArea id="fullDesc" @bind-Value="currentProductModel.FullDescription" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="price" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
+                            <InputNumber id="price" @bind-Value="currentProductModel.Price" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                        </div>
+                        <div>
+                            <label for="stock" class="block text-sm font-medium text-gray-700">Stok</label>
+                            <InputNumber id="stock" @bind-Value="currentProductModel.Stock" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                        </div>
+                    </div>
+                     <div class="mb-4">
+                        <label for="imageUrl" class="block text-sm font-medium text-gray-700">URL Gambar</label>
+                        <InputText id="imageUrl" @bind-Value="currentProductModel.ImageUrl" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="tag" class="block text-sm font-medium text-gray-700">Tag (Mis: BARU, DISKON)</label>
+                            <InputText id="tag" @bind-Value="currentProductModel.Tag" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm p-2" />
+                        </div>
+                        <div class="flex items-center mt-6">
+                             <InputCheckbox id="isFeatured" @bind-Value="currentProductModel.IsFeatured" class="h-4 w-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500" />
+                             <label for="isFeatured" class="ml-2 block text-sm text-gray-900">Produk Unggulan?</label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" @onclick="CancelEdit" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors">Batal</button>
+                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                            <i class="fas fa-save mr-1"></i> Simpan
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+
+    @if (products == null)
+    {
+        <p class="text-center text-gray-500">Memuat daftar produk...</p>
+    }
+    else if (!products.Any())
+    {
+        <p class="text-center text-gray-500">Belum ada produk. Silakan tambahkan produk baru.</p>
+    }
+    else
+    {
+        <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unggulan</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var product in products)
+                    {
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <img src="@product.ImageUrl" alt="@product.Name" class="w-16 h-16 object-cover rounded-md"/>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">@product.Name</div>
+                                <div class="text-xs text-gray-500">ID: @product.Id.Substring(0, Math.Min(8, product.Id.Length))...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@product.Category</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                @(product.Price > 0 ? product.Price.ToString("c0", new System.Globalization.CultureInfo("id-ID")) : "Hubungi")
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm @(product.Stock > 0 ? "text-green-600" : "text-red-600")">
+                                @product.Stock
+                            </td>
+                             <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                @if (product.IsFeatured) { <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100 text-pink-800">Ya</span> }
+                                else { <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Tidak</span> }
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button @onclick="() => StartEditProduct(product)" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button @onclick="() => ConfirmDeleteProduct(product)" class="text-red-600 hover:text-red-900" title="Hapus">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (productToDelete != null)
+    {
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+        <div class="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                <h3 class="text-lg font-medium text-gray-900">Konfirmasi Hapus Produk</h3>
+                <p class="mt-2 text-sm text-gray-600">
+                    Anda yakin ingin menghapus produk "<strong>@productToDelete.Name</strong>"? Tindakan ini tidak dapat diurungkan.
+                </p>
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                    <button @onclick="ExecuteDeleteProduct" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:col-start-2 sm:text-sm">
+                        Ya, Hapus
+                    </button>
+                    <button @onclick="() => productToDelete = null" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@code {
+    private List<ProductItem>? products;
+    private bool showProductForm = false;
+    private ProductItem currentProductModel = new(); // Untuk binding form
+    private bool isEditing = false;
+    private ProductItem? productToDelete; // Untuk konfirmasi hapus
+
+    // Placeholder untuk status login (GANTI DENGAN AUTENTIKASI NYATA)
+    private bool IsUserAdmin = true; // Asumsikan admin untuk demo ini
+
+    protected override async Task OnInitializedAsync()
+    {
+        // JIKA PAKAI AUTENTIKASI NYATA:
+        // var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        // var user = authState.User;
+        // if (!user.Identity.IsAuthenticated || !user.IsInRole("Admin"))
+        // {
+        //     NavigationManager.NavigateTo("/login?returnUrl=" + Uri.EscapeDataString(NavigationManager.Uri)); // Atau halaman "Unauthorized"
+        //     return;
+        // }
+        // IsUserAdmin = true; // Jika sudah lolos pengecekan di atas
+
+        if (!IsUserAdmin) // Untuk demo, ini tidak akan pernah false
+        {
+            // Arahkan ke halaman login atau tampilkan pesan tidak berotoritas
+            NavigationManager.NavigateTo("/"); // Contoh: kembali ke beranda
+            return;
+        }
+
+        ProductService.OnProductsChanged += LoadProducts; // Subscribe event
+        LoadProducts();
+    }
+
+    private void LoadProducts()
+    {
+        products = ProductService.GetProducts();
+        InvokeAsync(StateHasChanged); // Pastikan UI update jika dipanggil dari event
+    }
+
+    private void StartAddNewProduct()
+    {
+        isEditing = false;
+        currentProductModel = new ProductItem { ImageUrl = "https://placehold.co/400x300/E2E8F0/A0AEC0?text=Produk+Baru" }; // Model baru
+        showProductForm = true;
+    }
+
+    private void StartEditProduct(ProductItem productToEdit)
+    {
+        isEditing = true;
+        // Penting: Buat salinan objek agar perubahan di form tidak langsung mengubah list
+        currentProductModel = new ProductItem
+        {
+            Id = productToEdit.Id,
+            Name = productToEdit.Name,
+            ShortDescription = productToEdit.ShortDescription,
+            FullDescription = productToEdit.FullDescription,
+            Price = productToEdit.Price,
+            ImageUrl = productToEdit.ImageUrl,
+            Category = productToEdit.Category,
+            Tag = productToEdit.Tag,
+            WhatsAppNumber = productToEdit.WhatsAppNumber,
+            Stock = productToEdit.Stock,
+            IsFeatured = productToEdit.IsFeatured
+        };
+        showProductForm = true;
+    }
+
+    private void HandleValidSubmitProduct()
+    {
+        if (isEditing)
+        {
+            ProductService.UpdateProduct(currentProductModel);
+        }
+        else
+        {
+            ProductService.AddProduct(currentProductModel);
+        }
+        showProductForm = false;
+        // LoadProducts(); // Tidak perlu jika event OnProductsChanged sudah memicu ini
+    }
+
+    private void CancelEdit()
+    {
+        showProductForm = false;
+        currentProductModel = new(); // Reset model
+    }
+
+    private void ConfirmDeleteProduct(ProductItem product)
+    {
+        productToDelete = product;
+    }
+
+    private void ExecuteDeleteProduct()
+    {
+        if (productToDelete != null)
+        {
+            ProductService.DeleteProduct(productToDelete.Id);
+            productToDelete = null; // Sembunyikan modal
+            // LoadProducts(); // Tidak perlu jika event OnProductsChanged sudah memicu ini
+        }
+    }
+
+    public void Dispose()
+    {
+        ProductService.OnProductsChanged -= LoadProducts; // Unsubscribe
+    }
+}
